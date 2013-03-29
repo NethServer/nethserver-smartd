@@ -1,0 +1,47 @@
+Summary: NethServer smartd service
+Name: nethserver-smartd
+Version: @@VERSION@@
+Release: @@RELEASE@@
+License: GPL
+Source: %{name}-%{version}.tar.gz
+
+BuildArch: noarch
+BuildRequires: nethserver-devtools
+Requires: nethserver-base
+Requires: smartmontools
+AutoReq: no
+
+
+%description
+NethServer smartd management system.
+
+
+%preun
+source /etc/nethserver/rpm_hook_functions
+signal_event  %{name}-uninstall $1
+
+%post
+source /etc/nethserver/rpm_hook_functions
+event_queue add %{name}-update
+
+%prep
+%setup
+
+%build
+perl createlinks
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+(cd root ; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
+rm -f %{name}-%{version}-%{release}-filelist
+/sbin/e-smith/genfilelist $RPM_BUILD_ROOT   > %{name}-%{version}-%{release}-filelist
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files -f %{name}-%{version}-%{release}-filelist 
+%defattr(-,root,root)
+
+%changelog
