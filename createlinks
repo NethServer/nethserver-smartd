@@ -20,31 +20,16 @@
 #
 
 use esmith::Build::CreateLinks  qw(:all);
-# use strict;
-
 #
 # nethserver-smartd-update event
 #
 
 event_actions('nethserver-smartd-update', qw(
               initialize-default-databases   00
-              nethserver-smartd-conf       02
               runlevel-adjust                40
 ));
 
 event_services('nethserver-smartd-update', qw(
                smartd restart
 ));
-
-
-
-#--------------------------------------------------
-# actions for nethserver-smartd-uninstall event
-#--------------------------------------------------
-
-$event = "nethserver-smartd-uninstall";
-
-event_actions($event,
-              'nethserver-smartd-uninstall' => '02',
-              'runlevel-adjust' => '50');
 
