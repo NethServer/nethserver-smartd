@@ -1,24 +1,18 @@
 Summary: NethServer smartd service
 Name: nethserver-smartd
 Version: 1.0.1
-Release: 1
+Release: 1%{?dist}
 License: GPL
 Source: %{name}-%{version}.tar.gz
+URL: %{url_prefix}/%{name}
 
 BuildArch: noarch
 BuildRequires: nethserver-devtools
 Requires: nethserver-base
 Requires: smartmontools
-AutoReq: no
-
 
 %description
 NethServer smartd management system.
-
-
-%preun
-
-%post
 
 %prep
 %setup
@@ -26,19 +20,15 @@ NethServer smartd management system.
 %build
 perl createlinks
 
-
 %install
-rm -rf $RPM_BUILD_ROOT
-(cd root ; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
-rm -f %{name}-%{version}-%{release}-filelist
-/sbin/e-smith/genfilelist $RPM_BUILD_ROOT   > %{name}-%{version}-%{release}-filelist
+rm -rf %{buildroot}
+(cd root ; find . -depth -print | cpio -dump %{buildroot})
+%{genfilelist} %{buildroot} > %{name}-%{version}-filelist
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
-%files -f %{name}-%{version}-%{release}-filelist 
+%files -f %{name}-%{version}-filelist 
 %defattr(-,root,root)
+%doc COPYING
+%dir %{_nseventsdir}/%{name}-update
 
 %changelog
 * Wed Feb 05 2014 Davide Principi <davide.principi@nethesis.it> - 1.0.1-1.ns6
